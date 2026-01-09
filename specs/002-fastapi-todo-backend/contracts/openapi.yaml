@@ -1,0 +1,631 @@
+openapi: 3.1.0
+info:
+  title: Todo API - Phase 2
+  description: FastAPI backend for Todo application with JWT authentication from Next.js
+  version: 1.0.0
+  contact:
+    name: Hackathon II Team
+    url: https://github.com/anthropics/hackathon-todo
+
+servers:
+  - url: http://localhost:8000
+    description: Development server
+  - url: https://api.todo-app.example.com
+    description: Production server
+
+security:
+  - BearerAuth: []
+
+tags:
+  - name: tasks
+    description: Task management operations
+  - name: tags
+    description: Tag management and autocomplete
+  - name: health
+    description: Health check endpoints
+
+paths:
+  /health:
+    get:
+      tags:
+        - health
+      summary: Health check
+      description: Returns the health status of the API
+      operationId: healthCheck
+      responses:
+        '200':
+          description: API is healthy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: healthy
+                  service:
+                    type: string
+                    example: todo-api
+                  version:
+                    type: string
+                    example: 1.0.0
+
+  /api/{user_id}/tasks:
+    parameters:
+      - name: user_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          description: Better Auth user ID (must match JWT sub claim)
+        example: "550e8400-e29b-41d4-a716-446655440000"
+      - name: search
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Full-text search in task title and description (case-insensitive)
+        example: "groceries"
+      - name: status
+        in: query
+        required: false
+        schema:
+          type: string
+          enum: [all, pending, completed]
+          default: all
+        description: Filter tasks by completion status
+      - name: priority
+        in: query
+        required: false
+        schema:
+          type: string
+          enum: [all, High, Medium, Low]
+          default: all
+        description: Filter tasks by priority level
+      - name: tags
+        in: query
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+        style: form
+        explode: true
+        description: Filter by one or more tag names (e.g., ?tags=urgent&tags=work)
+        example: ["urgent", "work"]
+      - name: sort_by
+        in: query
+        required: false
+        schema:
+          type: string
+          enum: [created_at, updated_at, title, due_date, priority]
+          default: created_at
+        description: Field to sort by
+      - name: sort_direction
+        in: query
+        required: false
+        schema:
+          type: string
+          enum: [asc, desc]
+          default: desc
+        description: Sort direction (ascending or descending)
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 100
+          default: 50
+        description: Maximum number of tasks to return
+      - name: offset
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 0
+          default: 0
+        description: Number of tasks to skip for pagination
+
+    get:
+      tags:
+        - tasks
+      summary: List all tasks
+      description: Returns a list of all tasks for the authenticated user with optional search, filtering by status/priority/tags, sorting, and pagination
+      operationId: listTasks
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: List of tasks retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/TaskResponse'
+                  total:
+                    type: integer
+                    example: 42
+                  limit:
+                    type: integer
+                    example: 50
+                  offset:
+                    type: integer
+                    example: 0
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+
+    post:
+      tags:
+        - tasks
+      summary: Create a task
+      description: Creates a new task for the authenticated user
+      operationId: createTask
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskCreate'
+      responses:
+        '201':
+          description: Task created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+
+  /api/{user_id}/tasks/{task_id}:
+    parameters:
+      - name: user_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: Better Auth user ID
+      - name: task_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: Task ID (UUID)
+        example: "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+
+    get:
+      tags:
+        - tasks
+      summary: Get a single task
+      description: Returns a specific task by ID for the authenticated user
+      operationId: getTask
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Task retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+    put:
+      tags:
+        - tasks
+      summary: Update a task
+      description: Updates an existing task with the provided data
+      operationId: updateTask
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskUpdate'
+      responses:
+        '200':
+          description: Task updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+    patch:
+      tags:
+        - tasks
+      summary: Partial update a task
+      description: Partially updates an existing task with the provided data
+      operationId: partialUpdateTask
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskUpdate'
+      responses:
+        '200':
+          description: Task updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+    delete:
+      tags:
+        - tasks
+      summary: Delete a task
+      description: Permanently deletes a task
+      operationId: deleteTask
+      security:
+        - BearerAuth: []
+      responses:
+        '204':
+          description: Task deleted successfully
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /api/{user_id}/tasks/{task_id}/complete:
+    parameters:
+      - name: user_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: Better Auth user ID
+      - name: task_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: Task ID (UUID)
+        example: "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+
+    patch:
+      tags:
+        - tasks
+      summary: Toggle task completion
+      description: Toggles the completion status of a task (pending <-> completed)
+      operationId: toggleTaskCompletion
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Task completion status toggled successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /api/{user_id}/tags:
+    parameters:
+      - name: user_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: Better Auth user ID (must match JWT sub claim)
+        example: "550e8400-e29b-41d4-a716-446655440000"
+
+    get:
+      tags:
+        - tags
+      summary: Get user's tags
+      description: Returns all unique tags for the authenticated user with usage counts (for autocomplete)
+      operationId: getUserTags
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: List of tags with usage counts retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TagWithUsage'
+              example:
+                - name: "urgent"
+                  usage_count: 5
+                - name: "work"
+                  usage_count: 3
+                - name: "personal"
+                  usage_count: 2
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT token in Authorization header (Bearer scheme)
+
+  schemas:
+    PriorityType:
+      type: string
+      enum: [High, Medium, Low]
+      default: Medium
+      description: Task priority level
+      example: "High"
+
+    TaskCreate:
+      type: object
+      required:
+        - title
+      properties:
+        title:
+          type: string
+          minLength: 1
+          maxLength: 200
+          example: "Buy groceries"
+          description: Task title (1-200 characters)
+        description:
+          type: string
+          maxLength: 1000
+          nullable: true
+          example: "Milk, bread, eggs, butter"
+          description: Optional task description (0-1000 characters)
+        priority:
+          $ref: '#/components/schemas/PriorityType'
+        due_date:
+          type: string
+          format: date
+          nullable: true
+          example: "2025-01-05"
+          description: Optional task due date (ISO 8601 format YYYY-MM-DD)
+        tags:
+          type: array
+          items:
+            type: string
+          default: []
+          example: ["shopping", "urgent"]
+          description: List of tag names to associate with the task
+
+    TaskUpdate:
+      type: object
+      properties:
+        title:
+          type: string
+          minLength: 1
+          maxLength: 200
+          nullable: true
+          example: "Buy groceries"
+          description: Task title (1-200 characters)
+        description:
+          type: string
+          maxLength: 1000
+          nullable: true
+          example: "Updated description"
+          description: Optional task description (0-1000 characters)
+        completed:
+          type: boolean
+          nullable: true
+          example: true
+          description: Task completion status
+        priority:
+          allOf:
+            - $ref: '#/components/schemas/PriorityType'
+          nullable: true
+          description: Task priority level
+        due_date:
+          type: string
+          format: date
+          nullable: true
+          example: "2025-01-10"
+          description: Task due date (ISO 8601 format YYYY-MM-DD)
+        tags:
+          type: array
+          items:
+            type: string
+          nullable: true
+          example: ["work", "important"]
+          description: List of tag names (replaces existing tags)
+
+    TaskResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+          description: Unique task identifier (UUID v4)
+        user_id:
+          type: string
+          format: uuid
+          example: "550e8400-e29b-41d4-a716-446655440000"
+          description: Better Auth user ID
+        title:
+          type: string
+          example: "Buy groceries"
+          description: Task title
+        description:
+          type: string
+          nullable: true
+          example: "Milk, bread, eggs, butter"
+          description: Task description
+        completed:
+          type: boolean
+          example: false
+          description: Task completion status
+        priority:
+          $ref: '#/components/schemas/PriorityType'
+        due_date:
+          type: string
+          format: date
+          nullable: true
+          example: "2025-01-05"
+          description: Task due date (ISO 8601 format YYYY-MM-DD)
+        created_at:
+          type: string
+          format: date-time
+          example: "2025-12-30T10:00:00Z"
+          description: Task creation timestamp
+        updated_at:
+          type: string
+          format: date-time
+          example: "2025-12-30T10:30:00Z"
+          description: Last update timestamp
+        tags:
+          type: array
+          items:
+            type: string
+          default: []
+          example: ["shopping", "urgent"]
+          description: List of tag names associated with this task
+
+    Error:
+      type: object
+      properties:
+        detail:
+          type: string
+          example: "Task not found"
+          description: Error message describing what went wrong
+      required:
+        - detail
+
+    ValidationError:
+      type: object
+      properties:
+        detail:
+          type: array
+          items:
+            $ref: '#/components/schemas/ValidationErrorDetail'
+
+    ValidationErrorDetail:
+      type: object
+      properties:
+        loc:
+          type: array
+          items:
+            type: string
+          example: ["body", "title"]
+          description: Location of the error
+        msg:
+          type: string
+          example: "Field required"
+          description: Error message
+        type:
+          type: string
+          example: "missing"
+          description: Error type
+
+    TagWithUsage:
+      type: object
+      required:
+        - name
+        - usage_count
+      properties:
+        name:
+          type: string
+          example: "urgent"
+          description: Tag name
+        usage_count:
+          type: integer
+          minimum: 0
+          example: 5
+          description: Number of tasks using this tag
+
+  responses:
+    BadRequest:
+      description: Invalid request data
+      content:
+        application/json:
+          schema:
+            oneOf:
+              - $ref: '#/components/schemas/Error'
+              - $ref: '#/components/schemas/ValidationError'
+          examples:
+            validation_error:
+              summary: Validation failed
+              value:
+                detail:
+                  - loc: ["body", "title"]
+                    msg: "Field required"
+                    type: "missing"
+            invalid_length:
+              summary: Title too long
+              value:
+                detail: "Title must be 200 characters or less"
+
+    Unauthorized:
+      description: Authentication required or invalid token
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            detail: "Missing or invalid authorization header"
+
+    Forbidden:
+      description: Not authorized to access this resource
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            detail: "Not authorized to access these tasks"
+
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            detail: "Task not found"
