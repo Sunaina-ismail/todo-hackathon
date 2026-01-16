@@ -212,6 +212,8 @@ See `.specify/memory/constitution.md` for code quality, testing, performance, se
 ## Active Technologies
 - Python 3.13+ (as per constitution) + rich (for table formatting), dataclasses (for models), typing (for type hints), datetime (for timestamps) (001-todo-app)
 - In-memory only (no persistent storage as per spec) (001-todo-app)
+- Python 3.13+ (backend), TypeScript 5.x (frontend) (004-ai-chatbot)
+- Neon Serverless PostgreSQL (asyncpg driver) - Conversation and Message tables for chat persistence, existing Task tables for task operations (004-ai-chatbot)
 
 ## Recent Changes
 - 001-todo-app: Added Python 3.13+ (as per constitution) + rich (for table formatting), dataclasses (for models), typing (for type hints), datetime (for timestamps)
