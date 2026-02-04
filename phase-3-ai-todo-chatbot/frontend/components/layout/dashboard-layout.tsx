@@ -34,7 +34,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
   }, [pathname])
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-forest-black">
       {/* Desktop Sidebar - Collapsible */}
       <motion.aside
         initial={false}
@@ -57,9 +57,9 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
             className={cn(
               "absolute right-0 top-20 translate-x-1/2 z-50",
               "flex h-8 w-8 items-center justify-center rounded-full",
-              "bg-white border-2 border-gray-200",
-              "text-gray-600 hover:text-gray-900",
-              "shadow-lg hover:shadow-xl",
+              "bg-forest-charcoal border-2 border-neon-lime/30",
+              "text-neon-lime hover:text-white hover:bg-neon-lime/20",
+              "shadow-lg hover:shadow-neon-lime/20",
               "transition-all duration-200 hover:scale-110"
             )}
           >
@@ -79,7 +79,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-40 bg-black/50 lg:hidden"
+            className="fixed inset-0 z-40 bg-black/80 lg:hidden"
             onClick={() => setMobileSidebarOpen(false)}
           />
         )}
@@ -97,7 +97,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
           >
             <div className={cn(
               "h-full w-64 flex flex-col",
-              "bg-white border-r border-gray-200",
+              "bg-forest-charcoal border-r border-forest-charcoal/50",
               "relative"
             )}>
               {/* Close button floating outside on the right */}
@@ -106,8 +106,8 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
                 className={cn(
                   "absolute -right-12 top-4 z-50",
                   "flex h-10 w-10 items-center justify-center rounded-lg",
-                  "bg-white border border-gray-200",
-                  "text-gray-600 hover:text-gray-900",
+                  "bg-forest-charcoal border border-neon-lime/30",
+                  "text-neon-lime hover:text-white hover:bg-neon-lime/20",
                   "shadow-lg",
                   "transition-colors"
                 )}
@@ -135,13 +135,13 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
         {/* Mobile header with hamburger menu */}
         <header className={cn(
           "sticky top-0 z-30 flex h-16 items-center gap-4 px-4 lg:hidden",
-          "bg-white border-b border-gray-200"
+          "bg-forest-charcoal border-b border-forest-charcoal/50"
         )}>
           <Button
             variant="ghost"
             size="icon"
             onClick={() => setMobileSidebarOpen(true)}
-            className="text-gray-600 hover:text-gray-900 hover:bg-gray-100"
+            className="text-neon-lime hover:text-white hover:bg-neon-lime/20"
           >
             <Menu className="h-6 w-6" />
           </Button>

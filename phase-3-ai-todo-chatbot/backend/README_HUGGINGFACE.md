@@ -21,6 +21,9 @@ A production-ready FastAPI backend for a full-stack todo application with JWT au
 - **PostgreSQL Database** - Robust data persistence with SQLModel ORM
 - **API Documentation** - Auto-generated OpenAPI/Swagger docs
 - **Health Checks** - Built-in health monitoring endpoints
+- **AI-Powered Chatbot (Phase 3)** - Conversational task management via ChatKit
+- **Multi-Provider LLM Support** - OpenAI, Gemini, Groq, OpenRouter
+- **MCP Tool Integration** - Model Context Protocol for agent orchestration
 
 ## 📋 API Endpoints
 
@@ -36,6 +39,11 @@ A production-ready FastAPI backend for a full-stack todo application with JWT au
 
 ### Tags
 - `GET /api/{user_id}/tags` - Get user's tags with usage counts
+
+### AI Chatbot (Phase 3)
+- `POST /api/chatkit` - ChatKit conversational AI endpoint for task management
+- Supports natural language task operations via OpenAI Agents SDK
+- Multi-provider LLM support (OpenAI, Gemini, Groq, OpenRouter)
 
 ### Health
 - `GET /health` - Health check endpoint
@@ -59,7 +67,35 @@ ALLOWED_ORIGINS=https://your-frontend.vercel.app,https://your-frontend.com
 PORT=7860
 HOST=0.0.0.0
 ENVIRONMENT=production
+
+# ============================================================================
+# Phase 3: AI Chatbot Configuration (Optional - for ChatKit features)
+# ============================================================================
+
+# LLM Provider (choose one: openai | gemini | groq | openrouter)
+LLM_PROVIDER=openai
+
+# OpenAI Configuration (Default Provider)
+OPENAI_API_KEY=sk-...
+OPENAI_DEFAULT_MODEL=gpt-4o-mini
+
+# Gemini Configuration (Optional - uncomment to use)
+# GEMINI_API_KEY=AIza...
+# GEMINI_DEFAULT_MODEL=gemini-2.5-flash
+
+# Groq Configuration (Optional - uncomment to use)
+# GROQ_API_KEY=gsk_...
+# GROQ_DEFAULT_MODEL=llama-3.3-70b-versatile
+
+# OpenRouter Configuration (Optional - uncomment to use)
+# OPENROUTER_API_KEY=sk-or-v1-...
+# OPENROUTER_DEFAULT_MODEL=openai/gpt-oss-20b:free
+
+# MCP Server Configuration
+MCP_SERVER_NAME=todo-task-server
 ```
+
+**Note**: Phase 3 AI chatbot features are optional. If you don't configure LLM provider settings, the basic task management API will still work perfectly. The ChatKit endpoint requires at least one LLM provider to be configured.
 
 ## 🌐 Deploying to Hugging Face Spaces
 
@@ -98,15 +134,33 @@ In your Space, go to **Settings** → **Variables and secrets**:
 
 Add these secrets (click "New secret" for each):
 
+**Required Secrets:**
+
 | Name | Value | Example |
 |------|-------|---------|
 | `DATABASE_URL` | Your Neon connection string | `postgresql://user:pass@ep-xxx.neon.tech/neondb?sslmode=require` |
 | `BETTER_AUTH_SECRET` | Random 32+ char string | `dZLDHNC3q5cucIRX1qXkXAMg+y9z8b9IPbI27HnHJosqRgOJrhxby5eUedaltzR7` |
-| `ALLOWED_ORIGINS` | Your frontend URLs (comma-separated) | `https://todo-app.vercel.app,https://todo-app.com` |
+| `ALLOWED_ORIGINS` | Your frontend URLs (comma-separated) | `https://todo-app.vercel.app,https://todo-app-git-main.vercel.app` |
 | `PORT` | 7860 (Hugging Face default) | `7860` |
 | `ENVIRONMENT` | production | `production` |
+| `JWT_ALGORITHM` | HS256 | `HS256` |
 
-**Important**: Never commit these secrets to your repository!
+**Optional Secrets (Phase 3 AI Chatbot):**
+
+| Name | Value | Example |
+|------|-------|---------|
+| `LLM_PROVIDER` | LLM provider to use | `openai` (or `gemini`, `groq`, `openrouter`) |
+| `OPENAI_API_KEY` | OpenAI API key | `sk-proj-...` |
+| `OPENAI_DEFAULT_MODEL` | OpenAI model | `gpt-4o-mini` |
+| `GEMINI_API_KEY` | Gemini API key (optional) | `AIza...` |
+| `GROQ_API_KEY` | Groq API key (optional) | `gsk_...` |
+| `OPENROUTER_API_KEY` | OpenRouter API key (optional) | `sk-or-v1-...` |
+| `MCP_SERVER_NAME` | MCP server name | `todo-task-server` |
+
+**Important**:
+- Mark all as "Secret" to encrypt them
+- Never commit these secrets to your repository
+- Phase 3 AI features are optional - basic task management works without them
 
 ### Step 4: Upload Files
 
@@ -141,15 +195,17 @@ backend/
 
 ### Step 5: Verify Dockerfile
 
-Ensure your `Dockerfile` exposes port 7860:
+Ensure your `Dockerfile` exposes port 7860 and runs migrations:
 
 ```dockerfile
 # Expose Hugging Face default port
 EXPOSE 7860
 
-# Run on all interfaces
-CMD ["uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "7860"]
+# Run migrations and start server
+CMD alembic upgrade head && uvicorn src.main:app --host 0.0.0.0 --port 7860
 ```
+
+**Important**: The Dockerfile runs database migrations (`alembic upgrade head`) before starting the server. This ensures your database schema is always up to date.
 
 ### Step 6: Deploy
 
@@ -308,6 +364,10 @@ To update your backend:
 - **JWT** - Secure authentication (python-jose)
 - **Uvicorn** - Lightning-fast ASGI server
 - **Docker** - Containerization
+- **Alembic** - Database migrations
+- **OpenAI Agents SDK** - AI agent orchestration (Phase 3)
+- **ChatKit** - Conversational UI backend (Phase 3)
+- **MCP** - Model Context Protocol for tool integration (Phase 3)
 
 ## 📖 Additional Resources
 

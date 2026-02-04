@@ -45,14 +45,14 @@ export function TagFilter({ availableTags, className }: TagFilterProps) {
     // Reset to first page when filtering
     params.delete('offset');
 
-    router.push(`/dashboard?${params.toString()}`);
+    router.push(`/dashboard/tasks?${params.toString()}`);
   };
 
   const handleClearAll = () => {
     const params = new URLSearchParams(searchParams.toString());
     params.delete('tags');
     params.delete('offset');
-    router.push(`/dashboard?${params.toString()}`);
+    router.push(`/dashboard/tasks?${params.toString()}`);
   };
 
   const selectedCount = selectedTags.length;

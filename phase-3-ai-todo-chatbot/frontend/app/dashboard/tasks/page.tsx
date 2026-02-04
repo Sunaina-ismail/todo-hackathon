@@ -20,6 +20,7 @@ export const dynamic = 'force-dynamic'
 interface TasksPageProps {
   searchParams: Promise<{
     search?: string
+    status?: string
     priority?: string
     tags?: string
     sort_by?: string
@@ -45,10 +46,10 @@ export default async function TasksPage({ searchParams }: TasksPageProps) {
       {/* Page Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-gray-900">
+          <h1 className="text-2xl font-bold tracking-tight text-white">
             My Tasks
           </h1>
-          <p className="text-gray-600 mt-1">
+          <p className="text-forest-gray mt-1">
             Manage and organize your tasks efficiently
           </p>
         </div>
@@ -56,7 +57,7 @@ export default async function TasksPage({ searchParams }: TasksPageProps) {
       </div>
 
       {/* Search and Filters */}
-      <div className="bg-white rounded-lg border p-4">
+      <div className="bg-forest-charcoal/30 border border-forest-charcoal/50 rounded-lg p-4">
         <div className="flex flex-col lg:flex-row gap-4">
           <div className="flex-1">
             <SearchInput />
@@ -81,6 +82,7 @@ async function TaskListWrapper({
 }: {
   searchParams: {
     search?: string
+    status?: string
     priority?: string
     tags?: string
     sort_by?: string
@@ -91,19 +93,21 @@ async function TaskListWrapper({
   try {
     // Parse filter parameters
     const search = searchParams.search
+    const status = searchParams.status || 'all'
     const priority = searchParams.priority as 'High' | 'Medium' | 'Low' | 'all' | undefined
     const tags = searchParams.tags?.split(',').filter(Boolean)
-    const sortBy = searchParams.sort_by as 'created_at' | 'updated_at' | 'title' | 'due_date' | 'priority' | undefined
+    const sortBy = searchParams.sort_by as 'created' | 'due_date' | 'priority' | 'title' | undefined
     const sortDirection = searchParams.sort_direction as 'asc' | 'desc' | undefined
     const offset = searchParams.offset ? parseInt(searchParams.offset, 10) : undefined
 
     // Fetch filtered tasks
     const response = await fetchTasks({
       search,
+      status,
       priority: priority || 'all',
       tags,
-      sort_by: sortBy,
-      sort_direction: sortDirection,
+      sort_by: sortBy || 'created',
+      sort_direction: sortDirection || 'desc',
       limit: 10,
       offset: offset || 0,
     })

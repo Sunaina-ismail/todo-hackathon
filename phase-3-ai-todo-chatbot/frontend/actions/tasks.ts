@@ -178,7 +178,7 @@ export async function fetchTasks(params?: {
     })
   }
 
-  // Add sort_by parameter - map simple values to backend values
+  // Add sort_by parameter - map simplified values to backend values
   if (params?.sort_by) {
     // Map simplified sort values to backend-compatible values
     const sortDirection = params.sort_direction || 'desc'

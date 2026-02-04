@@ -11,8 +11,8 @@ export default async function TagsPage() {
     <div className="space-y-6">
       {/* Page Header */}
       <div>
-        <h1 className="text-2xl font-bold tracking-tight">Tags</h1>
-        <p className="text-muted-foreground mt-1">
+        <h1 className="text-2xl font-bold tracking-tight text-white">Tags</h1>
+        <p className="text-forest-gray mt-1">
           View and manage all your task tags
         </p>
       </div>
@@ -31,8 +31,8 @@ async function TagsListWrapper() {
 
     if (tagsResponse.error) {
       return (
-        <div className="border rounded-lg bg-card p-6">
-          <div className="text-center text-destructive">
+        <div className="border border-forest-charcoal/50 rounded-lg bg-forest-charcoal/30 p-6">
+          <div className="text-center text-error">
             {tagsResponse.error}
           </div>
         </div>
@@ -43,8 +43,8 @@ async function TagsListWrapper() {
 
     if (tags.length === 0) {
       return (
-        <div className="border rounded-lg bg-card">
-          <div className="p-6 text-center text-muted-foreground">
+        <div className="border border-forest-charcoal/50 rounded-lg bg-forest-charcoal/30">
+          <div className="p-6 text-center text-forest-gray">
             No tags yet
           </div>
         </div>
