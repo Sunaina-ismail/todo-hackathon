@@ -30,7 +30,7 @@ export function SearchInput({ className }: SearchInputProps) {
       // Reset to first page when searching
       params.delete('offset');
 
-      router.push(`/dashboard?${params.toString()}`);
+      router.push(`/dashboard/tasks?${params.toString()}`);
     },
     [router, searchParams]
   );

@@ -7,13 +7,12 @@
  * IMPORTANT: Task data is NOT queried through this client.
  * All task operations go through Server Actions that call the FastAPI backend.
  *
- * NOTE: Using Neon Serverless Pool for Better Auth compatibility
+ * NOTE: Using Neon Pool client for better reliability in Next.js API routes
  */
 
 import { drizzle } from 'drizzle-orm/neon-serverless'
-import { Pool, neonConfig } from '@neondatabase/serverless'
+import { Pool } from '@neondatabase/serverless'
 import * as schema from '@/db/schema'
-import ws from 'ws'
 
 if (!process.env.DATABASE_URL) {
   throw new Error(
@@ -21,12 +20,17 @@ if (!process.env.DATABASE_URL) {
   )
 }
 
-// Configure WebSocket for Node.js environments (required for Neon serverless)
-// This is necessary because Node.js doesn't have native WebSocket support
-neonConfig.webSocketConstructor = ws
-
-// Create Neon connection pool for serverless environments
-const pool = new Pool({ connectionString: process.env.DATABASE_URL })
+// Create Neon Pool client with proper configuration
+// Pool client is more reliable for Next.js API routes than HTTP client
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  // Increase connection timeout to handle database wake-up from sleep
+  connectionTimeoutMillis: 30000,
+  // Allow time for queries to complete
+  idleTimeoutMillis: 30000,
+  // Maximum number of clients in the pool
+  max: 10,
+})
 
 // Create Drizzle client with schema
 export const db = drizzle(pool, { schema })

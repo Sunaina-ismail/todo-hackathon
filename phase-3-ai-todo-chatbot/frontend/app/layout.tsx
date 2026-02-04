@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google';
 import Script from 'next/script';
 import './globals.css';
 import { Toaster } from 'sonner';
+import { QueryProvider } from '@/components/providers/query-provider';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -17,9 +18,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className={inter.className}>
-        {children}
+    <html lang="en" className="dark">
+      <body className={`${inter.className} bg-forest-black text-white antialiased`}>
+        <QueryProvider>
+          {children}
+        </QueryProvider>
         <Toaster />
         {/* CRITICAL: Load ChatKit CDN script for widget styling */}
         <Script

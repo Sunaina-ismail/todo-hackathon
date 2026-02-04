@@ -9,8 +9,8 @@ export default function SignInPage() {
     <div className="w-full max-w-md space-y-6">
       {/* Header */}
       <div className="text-center space-y-2">
-        <h1 className="text-2xl font-bold tracking-tight">Welcome back</h1>
-        <p className="text-sm text-gray-500">
+        <h1 className="text-2xl font-bold tracking-tight text-white">Welcome back</h1>
+        <p className="text-sm text-forest-gray">
           Enter your email below to sign in to your account
         </p>
       </div>
@@ -19,11 +19,11 @@ export default function SignInPage() {
       <SignInForm />
 
       {/* Sign Up Link */}
-      <p className="text-center text-sm text-gray-500">
+      <p className="text-center text-sm text-forest-gray">
         Don't have an account?{' '}
         <Link
           href="/sign-up"
-          className="font-medium text-primary hover:underline"
+          className="font-medium text-neon-lime hover:text-neon-lime/80 transition-colors"
         >
           Sign up
         </Link>
