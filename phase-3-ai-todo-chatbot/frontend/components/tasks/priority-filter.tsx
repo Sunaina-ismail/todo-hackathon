@@ -41,7 +41,7 @@ export function PriorityFilter({ className }: PriorityFilterProps) {
     // Reset to first page when filtering
     params.delete('offset');
 
-    router.push(`/dashboard?${params.toString()}`);
+    router.push(`/dashboard/tasks?${params.toString()}`);
   };
 
   const selectedLabel = priorities.find((p) => p.value === currentPriority)?.label || 'Priority';

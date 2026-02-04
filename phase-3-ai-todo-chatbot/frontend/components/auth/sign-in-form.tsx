@@ -8,12 +8,14 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Eye, EyeOff } from 'lucide-react';
 
 export function SignInForm() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+  const [showPassword, setShowPassword] = useState(false);
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -68,23 +70,23 @@ export function SignInForm() {
   }
 
   return (
-    <Card>
+    <Card className="bg-forest-charcoal/50 border-forest-charcoal/50 backdrop-blur-sm">
       <CardHeader>
-        <CardTitle>Sign In</CardTitle>
-        <CardDescription>
+        <CardTitle className="text-white">Sign In</CardTitle>
+        <CardDescription className="text-forest-gray">
           Enter your email and password to access your account
         </CardDescription>
       </CardHeader>
       <form onSubmit={handleSubmit}>
         <CardContent className="space-y-4">
           {error && (
-            <div className="p-3 text-sm text-red-500 bg-red-50 border border-red-200 rounded-md">
+            <div className="p-3 text-sm text-error bg-error/10 border border-error/30 rounded-md">
               {error}
             </div>
           )}
 
           <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
+            <Label htmlFor="email" className="text-white">Email</Label>
             <Input
               id="email"
               name="email"
@@ -94,33 +96,49 @@ export function SignInForm() {
               disabled={isLoading}
               autoComplete="email"
               aria-invalid={!!fieldErrors.email}
+              className="bg-forest-black/50 border-forest-charcoal text-white placeholder:text-forest-gray"
             />
             {fieldErrors.email && (
-              <p className="text-sm text-red-500">{fieldErrors.email}</p>
+              <p className="text-sm text-error">{fieldErrors.email}</p>
             )}
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="password">Password</Label>
-            <Input
-              id="password"
-              name="password"
-              type="password"
-              placeholder="********"
-              required
-              disabled={isLoading}
-              autoComplete="current-password"
-              aria-invalid={!!fieldErrors.password}
-            />
+            <Label htmlFor="password" className="text-white">Password</Label>
+            <div className="relative">
+              <Input
+                id="password"
+                name="password"
+                type={showPassword ? "text" : "password"}
+                placeholder="********"
+                required
+                disabled={isLoading}
+                autoComplete="current-password"
+                aria-invalid={!!fieldErrors.password}
+                className="bg-forest-black/50 border-forest-charcoal text-white placeholder:text-forest-gray pr-10"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-forest-gray hover:text-white transition-colors"
+                disabled={isLoading}
+              >
+                {showPassword ? (
+                  <EyeOff className="h-4 w-4" />
+                ) : (
+                  <Eye className="h-4 w-4" />
+                )}
+              </button>
+            </div>
             {fieldErrors.password && (
-              <p className="text-sm text-red-500">{fieldErrors.password}</p>
+              <p className="text-sm text-error">{fieldErrors.password}</p>
             )}
           </div>
         </CardContent>
         <CardFooter>
           <Button
             type="submit"
-            className="w-full"
+            className="w-full bg-neon-lime text-forest-black hover:bg-neon-lime/90 font-medium"
             disabled={isLoading}
           >
             {isLoading ? 'Signing in...' : 'Sign in'}

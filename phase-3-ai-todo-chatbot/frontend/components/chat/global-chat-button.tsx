@@ -102,25 +102,25 @@ export function GlobalChatButton() {
         className={cn(
           "fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50",
           "w-14 h-14 sm:w-16 sm:h-16 rounded-full",
-          // Gradient purple background matching your theme
-          "bg-gradient-to-br from-[#A855F7] via-[#9333EA] to-[#7C3AED]",
-          "hover:from-[#9333EA] hover:via-[#7C3AED] hover:to-[#6D28D9]",
-          // Glow effect
-          "shadow-[0_8px_32px_rgba(168,85,247,0.4)]",
-          "hover:shadow-[0_12px_40px_rgba(168,85,247,0.6)]",
-          "text-white",
+          // Neon Lime gradient background
+          "bg-gradient-to-br from-neon-lime via-neon-lime/90 to-neon-lime/80",
+          "hover:from-neon-lime/90 hover:via-neon-lime/80 hover:to-neon-lime/70",
+          // Glow effect with Neon Lime
+          "shadow-[0_8px_32px_rgba(190,242,100,0.4)]",
+          "hover:shadow-[0_12px_40px_rgba(190,242,100,0.6)]",
+          "text-forest-black",
           "flex items-center justify-center",
           "transition-all duration-300",
           "hover:scale-105 active:scale-95",
-          "focus:outline-none focus:ring-2 focus:ring-[#A855F7] focus:ring-offset-2 focus:ring-offset-background",
-          "border-2 border-white/20",
+          "focus:outline-none focus:ring-2 focus:ring-neon-lime focus:ring-offset-2 focus:ring-offset-forest-black",
+          "border-2 border-neon-lime/30",
           isOpen && "scale-0 opacity-0"
         )}
         aria-label="Open AI chat assistant"
       >
         {/* Icon with glow */}
         <div className="relative">
-          <div className="absolute inset-0 bg-white/20 blur-xl rounded-full" />
+          <div className="absolute inset-0 bg-forest-black/20 blur-xl rounded-full" />
           <MessageCircle className="relative w-6 h-6 sm:w-7 sm:h-7" />
         </div>
       </button>
@@ -156,28 +156,28 @@ export function GlobalChatButton() {
       >
         {/* Only render content after first open to avoid initial load */}
         {hasBeenOpened && (
-          <div className="bg-[#0A0A1F]/95 backdrop-blur-xl border border-purple-500/30 rounded-2xl shadow-2xl shadow-purple-500/20 flex-1 flex flex-col overflow-hidden">
+          <div className="bg-forest-black/95 backdrop-blur-xl border border-neon-lime/30 rounded-2xl shadow-2xl shadow-neon-lime/20 flex-1 flex flex-col overflow-hidden">
             {/* Header with gradient */}
-            <div className="flex items-center justify-between px-5 py-4 border-b border-purple-500/20 bg-gradient-to-r from-purple-500/10 via-purple-500/5 to-purple-500/10">
+            <div className="flex items-center justify-between px-5 py-4 border-b border-neon-lime/20 bg-gradient-to-r from-neon-lime/10 via-neon-lime/5 to-neon-lime/10">
               <div className="flex items-center gap-2 sm:gap-3">
                 <div className="relative">
-                  <div className="absolute inset-0 bg-purple-500/30 blur-xl rounded-full animate-pulse" />
-                  <div className="relative w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-br from-[#A855F7] to-[#7C3AED] flex items-center justify-center border border-purple-400/30 shadow-lg shadow-purple-500/30">
-                    <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
+                  <div className="absolute inset-0 bg-neon-lime/30 blur-xl rounded-full animate-pulse" />
+                  <div className="relative w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-br from-neon-lime to-neon-lime/80 flex items-center justify-center border border-neon-lime/30 shadow-lg shadow-neon-lime/30">
+                    <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-forest-black" />
                   </div>
                 </div>
                 <div>
                   <h3 id="chat-title" className="text-sm sm:text-base lg:text-lg font-bold text-white">
                     AI Assistant
                   </h3>
-                  <p className="text-[10px] sm:text-xs text-purple-300/80">
+                  <p className="text-[10px] sm:text-xs text-neon-lime/80">
                     Powered by Todo AI
                   </p>
                 </div>
               </div>
               <button
                 onClick={handleClose}
-                className="p-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 hover:border-purple-400/30 transition-all duration-200 group"
+                className="p-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 hover:border-neon-lime/30 transition-all duration-200 group"
                 aria-label="Close chat"
               >
                 <X className="w-5 h-5 text-gray-400 group-hover:text-white transition-colors" />
@@ -185,7 +185,7 @@ export function GlobalChatButton() {
             </div>
 
             {/* Chat Widget - stays mounted, preserves conversation */}
-            <div className="flex-1 overflow-hidden bg-[#0A0A1F]">
+            <div className="flex-1 overflow-hidden bg-forest-black">
               <ChatKitWidget className="h-full w-full" />
             </div>
           </div>

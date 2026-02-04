@@ -79,7 +79,7 @@ export function Sidebar({ className, forceCollapsed = false, onClose }: SidebarP
     <aside
       className={cn(
         'flex flex-col h-full',
-        'bg-white border-r border-gray-200',
+        'bg-forest-charcoal border-r border-forest-charcoal/50',
         'transition-all duration-300',
         className
       )}
@@ -95,15 +95,15 @@ export function Sidebar({ className, forceCollapsed = false, onClose }: SidebarP
         )}>
           <div className={cn(
             "flex items-center justify-center rounded-lg",
-            "bg-gradient-to-br from-blue-600 to-purple-600",
-            "shadow-lg hover:shadow-xl",
+            "bg-neon-lime/20 border border-neon-lime/30",
+            "shadow-lg hover:shadow-neon-lime/20",
             "transition-all duration-300 hover:scale-105",
             forceCollapsed ? "h-10 w-10" : "h-10 w-10"
           )}>
-            <CheckSquare className="h-6 w-6 text-white" />
+            <CheckSquare className="h-6 w-6 text-neon-lime" />
           </div>
           {!forceCollapsed && (
-            <span className="ml-3 text-lg font-semibold text-gray-900 inline-block">TaskFlow</span>
+            <span className="ml-3 text-lg font-semibold text-white inline-block">TaskFlow</span>
           )}
         </Link>
 
@@ -128,7 +128,7 @@ export function Sidebar({ className, forceCollapsed = false, onClose }: SidebarP
                   <motion.div
                     initial={{ opacity: 0, scale: 0.5 }}
                     animate={{ opacity: 1, scale: 1 }}
-                    className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-blue-600 rounded-r-full"
+                    className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-neon-lime rounded-r-full"
                   />
                 )}
 
@@ -138,7 +138,7 @@ export function Sidebar({ className, forceCollapsed = false, onClose }: SidebarP
                     initial={{ opacity: 0, x: -10 }}
                     animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, x: -10 }}
-                    className="absolute left-full top-1/2 -translate-y-1/2 ml-2 px-3 py-1.5 rounded-lg bg-gray-900 text-white text-sm font-medium whitespace-nowrap z-50 shadow-lg"
+                    className="absolute left-full top-1/2 -translate-y-1/2 ml-2 px-3 py-1.5 rounded-lg bg-forest-black border border-neon-lime/30 text-white text-sm font-medium whitespace-nowrap z-50 shadow-lg"
                   >
                     {item.name}
                   </motion.div>
@@ -153,8 +153,8 @@ export function Sidebar({ className, forceCollapsed = false, onClose }: SidebarP
                       ? 'h-11 w-11 rounded-lg justify-center mx-auto'
                       : 'h-11 px-3 rounded-lg w-full',
                     isActive
-                      ? 'bg-blue-50 text-blue-600'
-                      : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
+                      ? 'bg-neon-lime/20 text-neon-lime border border-neon-lime/30'
+                      : 'text-forest-gray hover:bg-forest-black/50 hover:text-white'
                   )}
                 >
                   <Icon className="h-5 w-5 flex-shrink-0" />
@@ -172,13 +172,13 @@ export function Sidebar({ className, forceCollapsed = false, onClose }: SidebarP
         {/* User section */}
         {user && (
           <div className={cn(
-            "border-t border-gray-200 pt-4 w-full",
+            "border-t border-forest-charcoal/50 pt-4 w-full",
             forceCollapsed ? "px-0" : "px-0"
           )}>
             {!forceCollapsed && (
               <div className="flex items-center gap-3 px-3 mb-3">
                 <Avatar className="h-9 w-9">
-                  <AvatarFallback className="bg-gradient-to-br from-blue-600 to-purple-600 text-white text-sm">
+                  <AvatarFallback className="bg-neon-lime/20 border border-neon-lime/30 text-neon-lime text-sm">
                     {user.name
                       .split(' ')
                       .map((n) => n[0])
@@ -187,8 +187,8 @@ export function Sidebar({ className, forceCollapsed = false, onClose }: SidebarP
                   </AvatarFallback>
                 </Avatar>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-gray-900 truncate">{user.name}</p>
-                  <p className="text-xs text-gray-500 truncate">{user.email}</p>
+                  <p className="text-sm font-medium text-white truncate">{user.name}</p>
+                  <p className="text-xs text-forest-gray truncate">{user.email}</p>
                 </div>
               </div>
             )}
@@ -196,7 +196,7 @@ export function Sidebar({ className, forceCollapsed = false, onClose }: SidebarP
             {forceCollapsed && (
               <div className="flex justify-center mb-3">
                 <Avatar className="h-9 w-9">
-                  <AvatarFallback className="bg-gradient-to-br from-blue-600 to-purple-600 text-white text-sm">
+                  <AvatarFallback className="bg-neon-lime/20 border border-neon-lime/30 text-neon-lime text-sm">
                     {user.name
                       .split(' ')
                       .map((n) => n[0])
@@ -218,7 +218,7 @@ export function Sidebar({ className, forceCollapsed = false, onClose }: SidebarP
                 <motion.div
                   initial={{ opacity: 0, x: -10 }}
                   animate={{ opacity: 1, x: 0 }}
-                  className="absolute left-full top-1/2 -translate-y-1/2 ml-2 px-3 py-1.5 rounded-lg bg-gray-900 text-white text-sm font-medium whitespace-nowrap z-50 shadow-lg"
+                  className="absolute left-full top-1/2 -translate-y-1/2 ml-2 px-3 py-1.5 rounded-lg bg-forest-black border border-neon-lime/30 text-white text-sm font-medium whitespace-nowrap z-50 shadow-lg"
                 >
                   Sign Out
                 </motion.div>
@@ -229,7 +229,7 @@ export function Sidebar({ className, forceCollapsed = false, onClose }: SidebarP
                 variant="ghost"
                 size={forceCollapsed ? "icon" : "default"}
                 className={cn(
-                  "text-gray-700 hover:bg-gray-100 hover:text-gray-900",
+                  "text-forest-gray hover:bg-forest-black/50 hover:text-white",
                   "transition-all duration-200",
                   forceCollapsed
                     ? "h-11 w-11 rounded-lg mx-auto"

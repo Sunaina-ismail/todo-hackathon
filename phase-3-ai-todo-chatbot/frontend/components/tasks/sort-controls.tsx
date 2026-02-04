@@ -10,29 +10,26 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { ArrowUpDown, ChevronDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
-
-type SortBy = 'created_at' | 'updated_at' | 'title' | 'due_date' | 'priority';
-type SortDirection = 'asc' | 'desc';
+import type { TaskSortBy, TaskSortDirection } from '@/types/task';
 
 interface SortControlsProps {
   className?: string;
 }
 
-const sortOptions: { value: SortBy; label: string }[] = [
-  { value: 'created_at', label: 'Date Created' },
-  { value: 'updated_at', label: 'Date Updated' },
-  { value: 'title', label: 'Title' },
+const sortOptions: { value: TaskSortBy; label: string }[] = [
+  { value: 'created', label: 'Date Created' },
   { value: 'due_date', label: 'Due Date' },
   { value: 'priority', label: 'Priority' },
+  { value: 'title', label: 'Title' },
 ];
 
 export function SortControls({ className }: SortControlsProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const currentSortBy = (searchParams.get('sort_by') as SortBy) || 'created_at';
-  const currentDirection = (searchParams.get('sort_direction') as SortDirection) || 'desc';
+  const currentSortBy = (searchParams.get('sort_by') as TaskSortBy) || 'created';
+  const currentDirection = (searchParams.get('sort_direction') as TaskSortDirection) || 'desc';
 
-  const handleSortChange = (sortBy: SortBy) => {
+  const handleSortChange = (sortBy: TaskSortBy) => {
     const params = new URLSearchParams(searchParams.toString());
 
     // Toggle direction if clicking the same sort field
@@ -45,7 +42,7 @@ export function SortControls({ className }: SortControlsProps) {
       params.set('sort_direction', 'desc');
     }
 
-    router.push(`/dashboard?${params.toString()}`);
+    router.push(`/dashboard/tasks?${params.toString()}`);
   };
 
   const selectedLabel = sortOptions.find((s) => s.value === currentSortBy)?.label || 'Sort By';

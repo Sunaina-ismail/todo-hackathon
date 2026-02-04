@@ -78,9 +78,9 @@ export function TaskItem({ task, onUpdate, onToggle }: TaskItemProps) {
     <>
       <div
         className={cn(
-          'flex items-start gap-4 p-4 bg-white border rounded-lg shadow-sm transition-all relative',
+          'flex items-start gap-4 p-4 bg-forest-charcoal/30 border border-forest-charcoal/50 rounded-lg shadow-sm transition-all relative hover:bg-forest-charcoal/40',
           isLoading && 'opacity-50',
-          optimisticCompleted && 'bg-gray-50'
+          optimisticCompleted && 'bg-forest-charcoal/20'
         )}
       >
         {/* Error message */}
@@ -106,15 +106,15 @@ export function TaskItem({ task, onUpdate, onToggle }: TaskItemProps) {
             <div className="min-w-0">
               <h3
                 className={cn(
-                  'font-medium truncate',
-                  optimisticCompleted && 'line-through text-gray-500'
+                  'font-medium truncate text-white',
+                  optimisticCompleted && 'line-through text-forest-gray'
                 )}
               >
                 {task.title}
               </h3>
 
               {task.description && (
-                <p className="text-sm text-gray-500 mt-1 line-clamp-2">
+                <p className="text-sm text-forest-gray mt-1 line-clamp-2">
                   {task.description}
                 </p>
               )}
@@ -127,7 +127,7 @@ export function TaskItem({ task, onUpdate, onToggle }: TaskItemProps) {
 
                 {/* Due Date */}
                 {task.due_date && (
-                  <span className="text-xs text-gray-500">
+                  <span className="text-xs text-forest-gray">
                     Due: {formatDate(task.due_date)}
                   </span>
                 )}
@@ -141,7 +141,7 @@ export function TaskItem({ task, onUpdate, onToggle }: TaskItemProps) {
                       </Badge>
                     ))}
                     {task.tags.length > 3 && (
-                      <span className="text-xs text-gray-400">
+                      <span className="text-xs text-forest-gray">
                         +{task.tags.length - 3}
                       </span>
                     )}
