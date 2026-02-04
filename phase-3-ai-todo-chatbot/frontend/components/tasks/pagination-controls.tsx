@@ -22,7 +22,7 @@ export function PaginationControls({
   const handlePageChange = (page: number) => {
     const params = new URLSearchParams(searchParams.toString());
     params.set('offset', String((page - 1) * 10)); // Assuming 10 items per page
-    router.push(`/dashboard?${params.toString()}`);
+    router.push(`/dashboard/tasks?${params.toString()}`);
   };
 
   if (totalPages <= 1) return null;
