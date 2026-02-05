@@ -1,0 +1,250 @@
+openapi: 3.0.3
+info:
+  title: Todo Application Health Endpoints
+  description: Health check endpoints for Kubernetes liveness and readiness probes
+  version: 1.0.0
+  contact:
+    name: Todo App Team
+
+servers:
+  - url: http://localhost:3000
+    description: Frontend (Next.js)
+  - url: http://localhost:8001
+    description: Backend (FastAPI)
+
+paths:
+  /api/health:
+    get:
+      summary: Liveness probe endpoint
+      description: |
+        Basic health check endpoint for Kubernetes liveness probes.
+        Returns 200 OK if the process is running and responsive.
+        Used by Kubernetes to detect crashed containers and trigger automatic restarts.
+      operationId: getLivenessStatus
+      tags:
+        - Health
+      responses:
+        '200':
+          description: Service is alive and responsive
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - status
+                  - timestamp
+                properties:
+                  status:
+                    type: string
+                    enum: [ok]
+                    description: Health status indicator
+                  timestamp:
+                    type: string
+                    format: date-time
+                    description: ISO 8601 timestamp of health check
+                  service:
+                    type: string
+                    description: Service name (frontend or backend)
+              examples:
+                frontend:
+                  value:
+                    status: ok
+                    timestamp: "2026-02-05T10:30:00Z"
+                    service: frontend
+                backend:
+                  value:
+                    status: ok
+                    timestamp: "2026-02-05T10:30:00Z"
+                    service: backend
+        '500':
+          description: Service is unhealthy (process error)
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - status
+                  - error
+                properties:
+                  status:
+                    type: string
+                    enum: [error]
+                  error:
+                    type: string
+                    description: Error message
+              example:
+                status: error
+                error: "Internal server error"
+
+  /api/ready:
+    get:
+      summary: Readiness probe endpoint
+      description: |
+        Readiness check endpoint for Kubernetes readiness probes.
+        Returns 200 OK only if the service is ready to handle requests.
+
+        Frontend: Validates that required environment variables are set.
+        Backend: Tests database connectivity and validates environment variables.
+
+        Used by Kubernetes to control traffic routing - pods that fail readiness
+        checks are removed from service load balancing until they pass.
+      operationId: getReadinessStatus
+      tags:
+        - Health
+      responses:
+        '200':
+          description: Service is ready to handle requests
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - status
+                  - timestamp
+                  - checks
+                properties:
+                  status:
+                    type: string
+                    enum: [ready]
+                    description: Readiness status indicator
+                  timestamp:
+                    type: string
+                    format: date-time
+                    description: ISO 8601 timestamp of readiness check
+                  service:
+                    type: string
+                    description: Service name (frontend or backend)
+                  checks:
+                    type: object
+                    description: Individual check results
+                    properties:
+                      environment:
+                        type: string
+                        enum: [ok, failed]
+                        description: Environment variables validation
+                      database:
+                        type: string
+                        enum: [ok, failed, n/a]
+                        description: Database connectivity (backend only)
+              examples:
+                frontend-ready:
+                  value:
+                    status: ready
+                    timestamp: "2026-02-05T10:30:00Z"
+                    service: frontend
+                    checks:
+                      environment: ok
+                      database: n/a
+                backend-ready:
+                  value:
+                    status: ready
+                    timestamp: "2026-02-05T10:30:00Z"
+                    service: backend
+                    checks:
+                      environment: ok
+                      database: ok
+        '503':
+          description: Service is not ready (dependencies unavailable)
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - status
+                  - timestamp
+                  - checks
+                properties:
+                  status:
+                    type: string
+                    enum: [not_ready]
+                  timestamp:
+                    type: string
+                    format: date-time
+                  service:
+                    type: string
+                  checks:
+                    type: object
+                    properties:
+                      environment:
+                        type: string
+                        enum: [ok, failed]
+                      database:
+                        type: string
+                        enum: [ok, failed, n/a]
+                  errors:
+                    type: array
+                    items:
+                      type: string
+                    description: List of readiness check failures
+              examples:
+                frontend-not-ready:
+                  value:
+                    status: not_ready
+                    timestamp: "2026-02-05T10:30:00Z"
+                    service: frontend
+                    checks:
+                      environment: failed
+                      database: n/a
+                    errors:
+                      - "Missing required environment variable: DATABASE_URL"
+                      - "Missing required environment variable: BETTER_AUTH_SECRET"
+                backend-not-ready:
+                  value:
+                    status: not_ready
+                    timestamp: "2026-02-05T10:30:00Z"
+                    service: backend
+                    checks:
+                      environment: ok
+                      database: failed
+                    errors:
+                      - "Database connection failed: Connection refused"
+
+components:
+  schemas:
+    HealthStatus:
+      type: object
+      required:
+        - status
+        - timestamp
+      properties:
+        status:
+          type: string
+          enum: [ok, error]
+        timestamp:
+          type: string
+          format: date-time
+        service:
+          type: string
+
+    ReadinessStatus:
+      type: object
+      required:
+        - status
+        - timestamp
+        - checks
+      properties:
+        status:
+          type: string
+          enum: [ready, not_ready]
+        timestamp:
+          type: string
+          format: date-time
+        service:
+          type: string
+        checks:
+          type: object
+          properties:
+            environment:
+              type: string
+              enum: [ok, failed]
+            database:
+              type: string
+              enum: [ok, failed, n/a]
+        errors:
+          type: array
+          items:
+            type: string
+
+tags:
+  - name: Health
+    description: Health check endpoints for Kubernetes probes
