@@ -1,0 +1,94 @@
+# Production defaults for Todo application
+
+replicaCount:
+  frontend: 2
+  backend: 2
+
+image:
+  frontend:
+    repository: todo-frontend
+    tag: latest
+    pullPolicy: IfNotPresent
+  backend:
+    repository: todo-backend
+    tag: latest
+    pullPolicy: IfNotPresent
+
+service:
+  frontend:
+    type: NodePort
+    port: 3000
+    nodePort: 30300
+  backend:
+    type: ClusterIP
+    port: 8001
+
+resources:
+  frontend:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+  backend:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+
+healthProbes:
+  frontend:
+    liveness:
+      initialDelaySeconds: 30
+      periodSeconds: 15
+      timeoutSeconds: 5
+      failureThreshold: 3
+    readiness:
+      initialDelaySeconds: 10
+      periodSeconds: 10
+      timeoutSeconds: 5
+      failureThreshold: 3
+  backend:
+    liveness:
+      initialDelaySeconds: 30
+      periodSeconds: 15
+      timeoutSeconds: 5
+      failureThreshold: 3
+    readiness:
+      initialDelaySeconds: 10
+      periodSeconds: 10
+      timeoutSeconds: 5
+      failureThreshold: 3
+
+config:
+  # Service URLs (internal cluster communication)
+  FRONTEND_URL: "http://todo-app-frontend:3000"
+  BACKEND_URL: "http://todo-app-backend:8001"
+
+  # Better Auth configuration (required at runtime)
+  BETTER_AUTH_URL: "http://todo-app-frontend:3000"
+
+  # LLM Provider configuration
+  LLM_PROVIDER: "openai"
+  OPENAI_DEFAULT_MODEL: "gpt-4o-mini"
+  GEMINI_DEFAULT_MODEL: "gemini-2.5-flash"
+  GROQ_DEFAULT_MODEL: "llama-3.3-70b-versatile"
+  OPENROUTER_DEFAULT_MODEL: "openai/gpt-4o-mini"
+
+  # Logging
+  LOG_LEVEL: "info"
+
+secrets:
+  DATABASE_URL: ""
+  BETTER_AUTH_SECRET: ""
+  OPENAI_API_KEY: ""
+  OPENROUTER_API_KEY: ""
+  GROQ_API_KEY: ""
+  GEMINI_API_KEY: ""
+  CLOUDFLARE_R2_ACCOUNT_ID: ""
+  CLOUDFLARE_R2_ACCESS_KEY_ID: ""
+  CLOUDFLARE_R2_SECRET_ACCESS_KEY: ""
+  CLOUDFLARE_R2_BUCKET_NAME: ""

@@ -1,0 +1,48 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Forest & Neon Theme - Dark Mode by Default */
+    --background: 150 14% 6%;           /* #090E0C - Forest Black */
+    --foreground: 0 0% 100%;            /* #FFFFFF - White */
+    --card: 150 24% 8%;                 /* #111814 - Emerald Charcoal */
+    --card-foreground: 0 0% 100%;
+    --popover: 150 24% 8%;
+    --popover-foreground: 0 0% 100%;
+    --primary: 84 81% 69%;              /* #BEF264 - Neon Lime */
+    --primary-foreground: 0 0% 0%;      /* Black text on Neon Lime */
+    --secondary: 150 24% 8%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 215 20% 45%;               /* #64748B - Emerald-Gray */
+    --muted-foreground: 215 20% 45%;
+    --accent: 84 81% 69%;               /* #BEF264 - Neon Lime */
+    --accent-foreground: 0 0% 0%;
+    --destructive: 0 84% 60%;           /* #EF4444 - Red */
+    --destructive-foreground: 0 0% 100%;
+    --border: 150 24% 8%;
+    --input: 150 24% 8%;
+    --ring: 84 81% 69%;
+    --radius: 0.5rem;
+
+    /* Sidebar colors */
+    --sidebar-background: 150 24% 8%;   /* #111814 - Emerald Charcoal */
+    --sidebar-foreground: 0 0% 100%;
+    --sidebar-primary: 84 81% 69%;      /* #BEF264 - Neon Lime */
+    --sidebar-primary-foreground: 0 0% 0%;
+    --sidebar-accent: 84 81% 69%;       /* #BEF264 for active states */
+    --sidebar-accent-foreground: 0 0% 0%;
+    --sidebar-border: 150 24% 8%;
+    --sidebar-ring: 84 81% 69%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}

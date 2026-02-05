@@ -215,6 +215,19 @@ See `.specify/memory/constitution.md` for code quality, testing, performance, se
 - Python 3.13+ (backend), TypeScript 5.x (frontend) (004-ai-chatbot)
 - Neon Serverless PostgreSQL (asyncpg driver) - Conversation and Message tables for chat persistence, existing Task tables for task operations (004-ai-chatbot)
 - TypeScript 5.x with Next.js 16.1.1 (App Router) (005-modern-dashboard-redesign)
+- Kubernetes 1.28+ with Minikube 1.32+ for local cluster orchestration (007-phase4-k8s-deployment)
+- Helm 3.x for Kubernetes package management and deployment (007-phase4-k8s-deployment)
+- Docker 24+ for container image building within Minikube daemon (007-phase4-k8s-deployment)
+- kubectl 1.28+ for Kubernetes cluster management (007-phase4-k8s-deployment)
+- Health probes: HTTP-based liveness (/api/health) and readiness (/api/ready) endpoints (007-phase4-k8s-deployment)
+- ConfigMaps for non-sensitive configuration, Secrets for credentials (007-phase4-k8s-deployment)
+- NodePort service (port 30300) for frontend external access, ClusterIP service (port 8001) for backend internal communication (007-phase4-k8s-deployment)
+- Multi-stage Dockerfiles with non-root execution (UID 1000) and resource limits (007-phase4-k8s-deployment)
+- Port-forwarding with --address 0.0.0.0 for Windows/WSL2 access (007-phase4-k8s-deployment)
+- ChatKit API proxy route handler for Docker/Kubernetes deployments (007-phase4-k8s-deployment)
+- asyncpg SSL configuration with connect_args (007-phase4-k8s-deployment)
+- Better Auth trusted origins for localhost access (007-phase4-k8s-deployment)
 
 ## Recent Changes
 - 001-todo-app: Added Python 3.13+ (as per constitution) + rich (for table formatting), dataclasses (for models), typing (for type hints), datetime (for timestamps)
+- 007-phase4-k8s-deployment: Fixed asyncpg SSL configuration, added ChatKit proxy route, configured Better Auth for localhost, changed backend port to 8001

@@ -1,0 +1,29 @@
+# Minikube overrides for local development
+
+replicaCount:
+  frontend: 1
+  backend: 1
+
+image:
+  frontend:
+    pullPolicy: Never  # Use local images only
+  backend:
+    pullPolicy: Never  # Use local images only
+
+service:
+  backend:
+    port: 8001  # Backend uses port 8001 (8000 is in use by another application)
+
+config:
+  # Service URLs (internal cluster communication)
+  FRONTEND_URL: "http://todo-app-frontend:3000"
+  BACKEND_URL: "http://todo-app-backend:8001"
+
+  # Better Auth configuration (required at runtime)
+  BETTER_AUTH_URL: "http://todo-app-frontend:3000"
+
+  # LLM Provider configuration
+  LLM_PROVIDER: "openai"
+
+  # Logging
+  LOG_LEVEL: "debug"
