@@ -9,7 +9,10 @@ RUN pip install --no-cache-dir uv
 WORKDIR /app
 
 # Copy dependency files
-COPY pyproject.toml README.md ./
+COPY pyproject.toml ./
+
+# Create minimal README.md (Hugging Face uses README.md for Space card, not available in build)
+RUN echo "# Todo Backend API" > README.md
 
 # Install dependencies using UV
 RUN uv sync --no-dev
@@ -31,6 +34,7 @@ COPY --from=builder /app/.venv /app/.venv
 
 # Copy application source
 COPY src/ /app/src/
+COPY mcp_server/ /app/mcp_server/
 COPY alembic/ /app/alembic/
 COPY alembic.ini /app/
 
