@@ -821,8 +821,6 @@ Before deploying your chatbot frontend, you must configure OpenAI's domain allow
 
 ## **Environment Variables**
 
-NEXT\_PUBLIC\_OPENAI\_DOMAIN\_KEY=your-domain-key-here
-
 *Note: The hosted ChatKit option only works after adding the correct domains under Security → Domain Allowlist. Local development (\`localhost\`) typically works without this configuration.*
 
 # **Key Architecture Benefits**
